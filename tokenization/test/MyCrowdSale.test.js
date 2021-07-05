@@ -1,5 +1,6 @@
 const MyToken = artifacts.require("./MyToken.sol");
 const MyCrowdSale = artifacts.require("./MyCrowdSale.sol");
+const KycContract = artifacts.require("./KycContract.sol");
 
 const chai = require("./setup.js");
 const BN = web3.utils.BN;
@@ -26,8 +27,12 @@ contract("MyCrowdsale", async (accounts) => {
   it("... should be possible to buy tokens from crowdsale contract", async () => {
     let tokenInstance = await MyToken.deployed();
     let crowdSaleInstance = await MyCrowdSale.deployed();
+    const kycInstance = await KycContract.deployed();
 
     let balanceofDeployer = await tokenInstance.balanceOf(accounts[0]); // initial balance = 0, as all tokens transferred to crowdsale contract
+
+    //Set Kyc
+    kycInstance.setKycCompleted(accounts[0], { from: accounts[0] });
 
     // expect(
     //   crowdSaleInstance.sendTransaction({

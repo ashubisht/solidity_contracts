@@ -1,5 +1,6 @@
 var MyToken = artifacts.require("./MyToken.sol");
 var MyCrowdSale = artifacts.require("./MyCrowdSale.sol");
+var KycContract = artifacts.require("./KycContract.sol");
 const dotenv = require("dotenv").config({ path: "../.env" });
 
 module.exports = async function (deployer) {
@@ -11,7 +12,14 @@ module.exports = async function (deployer) {
     "MoonDuck Cappuccino Token",
     "MCT"
   );
-  await deployer.deploy(MyCrowdSale, 1, address[0], MyToken.address);
+  await deployer.deploy(KycContract);
+  await deployer.deploy(
+    MyCrowdSale,
+    1,
+    address[0],
+    MyToken.address,
+    KycContract.address
+  );
   const instance = await MyToken.deployed();
   instance.transfer(MyCrowdSale.address, tokenCount);
 };
